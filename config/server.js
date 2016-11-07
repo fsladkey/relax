@@ -1,6 +1,6 @@
 const app = require('http').createServer(handler)
-var io = require('socket.io')(app);
-var PORT = process.env.PORT || 5001;
+const io = require('socket.io')(app);
+const PORT = process.env.PORT || 5001;
 
 function handler(req, res) {
   res.writeHead(200)
@@ -8,7 +8,7 @@ function handler(req, res) {
 }
 
 module.exports = {
-  emitRefresh: function reload() {
+  emitRefresh() {
     io.emit("update");
   }
 }

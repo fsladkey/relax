@@ -6,24 +6,58 @@ window.resetApp = function() {
   const App = require('./components/app')
   const root = document.querySelector("#react-content")
   ReactDOM.render(React.createElement(App), root)
+  showImageTag(() => setTimeout(hideImageTag, 300));
 }
 
 function reloadJS() {
-  var oldLink = document.getElementsByTagName("script")[0];
-  var newLink = document.createElement("script");
+  const oldLink = document.getElementsByTagName("script")[0];
+  const newLink = document.createElement("script");
   newLink.onload = () => resetApp();
   newLink.setAttribute("src", oldLink.src);
   document.querySelector("body").replaceChild(newLink, oldLink);
 }
 
 function reloadCSS() {
-  var oldLink = document.getElementsByTagName("link")[0];
-  var newLink = document.createElement("link");
+  const head = document.querySelector("head");
+  const oldLink = document.getElementsByTagName("link")[0];
+  const newLink = document.createElement("link");
   newLink.setAttribute("rel", "stylesheet");
   newLink.setAttribute("type", "text/css");
+  newLink.onload = () => head.removeChild(oldLink);
   newLink.setAttribute("href", oldLink.href);
-  document.querySelector("head").replaceChild(newLink, oldLink);
+  head.appendChild(newLink, oldLink);
 }
+
+function createImageTag() {
+  window.imgTag = document.createElement('img');
+  imgTag.src = 'statics/images/webpack_logo.gif';
+  imgTag.style.position = 'fixed';
+  imgTag.style.height = '30px';
+  imgTag.style.width = '30px';
+  imgTag.style.top = '30px';
+  imgTag.style.right = '30px';
+  imgTag.style.opacity = 0;
+  document.querySelector('body').appendChild(imgTag);
+}
+
+function showImageTag(cb) {
+  if (imgTag.style.opacity >= 1) {
+    imgTag.style.opacity = 1;
+    cb();
+  } else {
+    imgTag.style.opacity = parseFloat(imgTag.style.opacity) + 0.1;
+    setTimeout(() => showImageTag(cb), 10);
+  }
+}
+
+function hideImageTag() {
+  if (imgTag.style.opacity <= 0) {
+    imgTag.style.opacity = 0;
+  } else {
+    imgTag.style.opacity = parseFloat(imgTag.style.opacity) - 0.05;
+    setTimeout(() => hideImageTag(), 35);
+  }
+};
 
  function hotReload() {
   reloadCSS();
@@ -33,11 +67,12 @@ function reloadCSS() {
 
 
 if (!window.connected) {
-  var socket = io.connect('http://localhost:5001');
+  const socket = io.connect('http://localhost:5001');
   socket.on('update', () => {
     console.log("reloading...");
     hotReload()
   });
   window.connected = true
+  createImageTag();
   hotReload()
 }

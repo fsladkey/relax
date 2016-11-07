@@ -4,7 +4,9 @@
   "description": "",
   "main": "component.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node config/start.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "webpack": "node_modules/.bin/webpack --watch"
   },
   "keywords": [],
   "author": "",
@@ -26,8 +28,8 @@
     "socket.io": "^1.5.1",
     "socket.io-client": "^1.5.1",
     "style-loader": "^0.13.1",
+    "tape": "^4.6.2",
     "webpack": "^1.13.3"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
