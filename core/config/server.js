@@ -13,7 +13,7 @@ module.exports = {
     io.emit("update");
   },
 
-  start=() {
+  start() {
     app.listen(PORT, function () {
       console.log('Server listening at port %d', PORT);
     });
