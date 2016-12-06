@@ -5,6 +5,7 @@
   "main": "component.js",
   "scripts": {
     "start": "node config/start.js",
+    "repl": "node config/repl.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "webpack": "node_modules/.bin/webpack --watch"
   },
@@ -21,6 +22,7 @@
     "extract-text-webpack-plugin": "^1.0.1",
     "node-sass": "^3.10.1",
     "on-build-webpack": "^0.1.0",
+    "pg": "^6.1.0",
     "postcss-loader": "^1.1.0",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
