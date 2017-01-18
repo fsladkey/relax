@@ -1,4 +1,5 @@
-const Comment = require('./Photo')
-const resource = require('../../core/resourceCreators/PersistentResource.js')
+const Comment = require('./Comment')
+const resource = require('../../core/resourceCreators').resource
+const persistant = require('../../core/resourceCreators').persistant
 
-module.exports = persistant(resource("photos"), Comment)
+module.exports = persistant(resource("comments"), Comment)

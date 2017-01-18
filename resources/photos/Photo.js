@@ -23,4 +23,13 @@ module.exports = class Photo extends Model {
       caption: "text"
     }
   }
+  static associations() {
+    return {
+      user: {
+        type: "belongsTo",
+        foreignKey: "userId",
+        resourceType: "users",
+      }
+    }
+  }
 }

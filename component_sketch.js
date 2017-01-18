@@ -38,26 +38,23 @@
 // resources("posts").read()
 
 import React, { Component } from 'react';
-import { makeComponent } from 'core'
+import { connect } from 'core'
 
 class App Extends Component {
+
+  static resources(from, props) {
+    return { currentUser: from("session").get() }
+  }
 
   componentDidMount() {
     this.props.from("session").get();
   }
 
-  resources(resources, appState, ownProps) {
-    return { currentUser: resources("session").read() }
-  }
-
   render() {
     const { currentUser } = this.props;
-    const greeting = !!currentUser.id ?
-      "Please sign in." :
-      `Welcome, ${currentUser.username}!`
     return (
       <main>
-        <h1>Welcome { this.props.currentUser.username }</h1>
+        <h1>Welcome { currentUser.username }</h1>
         <PostsIndex />
       </main>
     );
@@ -65,14 +62,14 @@ class App Extends Component {
 
 }
 
-class PostsIndex Extends Component {
+class PostsIndex extends Component {
+
+  static resources(from, props) {
+    return { posts: from("posts").get.all() }
+  }
 
   componentDidMount() {
     this.props.from("posts").get.all();
-  }
-
-  resources(from, appState, ownProps) {
-    return { posts: from("posts").get.all() }
   }
 
   render() {
@@ -96,4 +93,4 @@ class PostsIndex Extends Component {
 
 }
 
-export default makeComponent(App)
+export default connect(App)

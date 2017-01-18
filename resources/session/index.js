@@ -1,15 +1,18 @@
-const resources = require('core/resources')
-const session = require('core/session')
-const extract = require('core/util').extract
+//TODO Implement session object
+const resource = require('../../core/resourceCreators').resource
+const singular = require('../../core/resourceCreators').singular
 
-const { resource, singular } = resources
+function session(req, res) {
+  return { get: (key) => {}, set: (key, val) => {}, }
+}
+const only = require('../../core/utils/utils').only
 
 module.exports = singular(resource("session", {
 
-  actions: (from) => {
+  actions: (from) => ({
 
     show(req) {
-      from('users').get.one({ session_token: session(req).get("sessionToken") });
+      from('users').get.one({ session_token: session(req, res).get("sessionToken") });
     },
 
     create(req) {
@@ -20,7 +23,7 @@ module.exports = singular(resource("session", {
         user.id,
         { session_token: util.randomToken() }
       ).then(user => {
-        session(req).set("sessionToken", user.sessionToken());
+        session(req, res).set("sessionToken", user.sessionToken());
         return user;
       });
     },
@@ -29,9 +32,9 @@ module.exports = singular(resource("session", {
       const { params: { id } } = req
       return from.users.patch(
         id,
-        { session_token: session(req).get("sessionToken") }
+        { session_token: session(req, res).get("sessionToken") }
       );
     }
-  }
+  })
 
 }));
