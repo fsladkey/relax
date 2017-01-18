@@ -4,8 +4,8 @@
   "description": "",
   "main": "component.js",
   "scripts": {
-    "start": "node config/start.js",
-    "repl": "node config/repl.js",
+    "start": "node core/config/start.js",
+    "repl": "node core/config/repl.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "webpack": "node_modules/.bin/webpack --watch"
   },

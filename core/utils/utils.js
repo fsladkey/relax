@@ -61,7 +61,6 @@ function matchRoute(req, routes) {
     if (req.method.toUpperCase() !== route.method.toUpperCase())
       return false
     if (route.path.exec(req.url))
-        route.params = 
       return route
   })
 }
