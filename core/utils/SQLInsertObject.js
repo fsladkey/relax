@@ -5,6 +5,7 @@ class SQLUpdateObject {
   }
 
   toQuery() {
+    // TODO: ESCAPE VALUES
     const columns = Object.keys(except("id", this.attrs))
     const values = columns.map(col => this.attrs[col])
     let queryString = `INSERT INTO ${ this.tableName } (${ columns }) `

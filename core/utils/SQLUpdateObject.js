@@ -6,6 +6,7 @@ class SQLUpdateObject {
   }
 
   toQuery() {
+    // TODO: ESCAPE VALUES
     const columns = except("id", this.attrs
     const setters = this.attrs.map(col => {
       if (obj_params[col]) return "${col} = ${ obj_params[col] }"

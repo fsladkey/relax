@@ -2,10 +2,10 @@ function selectAllColumns(resourceType, columns) {
   return columns.map(col => `${resourceType}.${col}`)
 }
 
-
+// TODO: ESCAPE VALUES
 module.exports = class SQLQueryObject {
   constructor(resourceConfig, resourceType, params = {}) {
-    this.tableName = resourceConfig[resourceType].tableName
+    this.tableName = resourceConfig[resourceType].tableName || resourceType
     this.resourceConfig = resourceConfig
     this.resourceType = resourceType
     const columns = Object.keys(resourceConfig[resourceType].model.describe)
