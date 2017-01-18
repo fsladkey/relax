@@ -39,7 +39,6 @@ function except(...args) {
   return objectFilter(obj, (key, val) => !args.includes(key))
 }
 
-
 function matches(item, clauses) {
   return Object.keys(clauses).reduce((result, col) => {
     return result && item[col] == clauses[col]
@@ -57,6 +56,16 @@ function deepMerge(obj, toMerge) {
   return newObj
 }
 
+function matchRoute(req, routes) {
+  return routes.find(route => {
+    if (req.method.toUpperCase() !== route.method.toUpperCase())
+      return false
+    if (route.path.exec(req.url))
+        route.params = 
+      return route
+  })
+}
+
 module.exports = {
   matches,
   deepMerge,
@@ -65,5 +74,6 @@ module.exports = {
   mapFromArray,
   objectFilter,
   filterMap,
-  isEmpty
+  isEmpty,
+  matchRoute
 }

@@ -1,4 +1,4 @@
-const config = require('../config/settings')
+const config = require('./config/settings')
 const pg = require('pg')
 
 const client = new pg.Client()
@@ -15,7 +15,6 @@ const dbConfig = {
 const pool = new pg.Pool(dbConfig)
 
 function query(query) {
-  console.log(query);
   return pool.query(query)
     .catch(err => console.error(err))
     .then((result) => result.rows)

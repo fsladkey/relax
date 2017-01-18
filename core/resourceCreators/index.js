@@ -1,40 +1,53 @@
-function createDefaultRoutes(resourceName, core) {
-  const actions = core[resourceName].actions
-  const createHandler = (name) => actions[name]
+const ACTION_TYPES = ["index", "show", "create", "update", "destroy"]
+
+const genericHandler = (type) => (req, res) => {
+  res.render(`This ${type} handler not implemented`)
+}
+
+const matcher = (resourceName) => {
+  return new RegExp(`^\/${resourceName}\/?$`)
+}
+
+const matchOne =(resourceName) => {
+  return new RegExp(`^\/${resourceName}\/(.+)\/?$`)
+}
+
+function defaultRoutes(resourceName, core) {
+  const createHandler = (name) => (...args) => (
+    core[resourceName].actions[name](...args)
+  )
+  new RegExp(`^\/${resourceName}\/(.+)\/?`)
   return [
-    { method: 'GET', path: `/${resourceName}`, handler: createHandler("index") },
-    { method: 'GET', path: `/${resourceName}/:id`, handler: createHandler("show") },
-    { method: 'POST', path: `/${resourceName}`, handler: createHandler("create") },
-    { method: 'PATCH', path: `/${resourceName}/:id`, handler: createHandler("update") },
-    { method: 'DELETE', path: `/${resourceName}/:id`, handler: createHandler("destroy") }
+    { method: 'GET', path:  matcher(resourceName), handler: createHandler("index") },
+    { method: 'GET', path: matchOne(resourceName), handler: createHandler("show") },
+    { method: 'POST', path:  matcher(resourceName), handler: createHandler("create") },
+    { method: 'PATCH', path: matchOne(resourceName), handler: createHandler("update") },
+    { method: 'DELETE', path: matchOne(resourceName), handler: createHandler("destroy") }
   ]
 }
-function createSingularRoutes(resourceName, core) {
-  const actions = core[resourceName].actions
-  const createHandler = (name) => actions[name]
+function singularRoutes(resourceName, core) {
+  const createHandler = (name) => (...args) => (
+    core[resourceName].actions[name](...args)
+  )
+  const path = matcher(resourceName)
   return [
-    { method: 'GET', path: `/${resourceName}`, handler: createHandler("show") },
-    { method: 'POST', path: `/${resourceName}`, handler: createHandler("create") },
-    { method: 'PATCH', path: `/${resourceName}`, handler: createHandler("update") },
-    { method: 'DELETE', path: `/${resourceName}`, handler: createHandler("destroy") }
+    { method: 'GET', path, handler: createHandler("show") },
+    { method: 'POST', path, handler: createHandler("create") },
+    { method: 'PATCH', path, handler: createHandler("update") },
+    { method: 'DELETE', path, handler: createHandler("destroy") }
   ]
 }
 
 function genericActions(resourceName, core) {
   const actions = {}
-  const genericHandler = (type) => (req, res) => {
-    res.render(`This ${type} handler not implemented`)
-  }
-  ;["index", "show", "create", "update", "destroy"].forEach(type) => {
-    actions[type] = genericHandler(type)
-  }
+  ACTION_TYPES.forEach(type => actions[type] = genericHandler(type))
   return actions;
 }
 
 function persistantActions(resourceName, { from }) {
   return {
     index(req, res) {
-      from(resourceName).get.all(req.params.config).then(resource => {
+      from(resourceName).get.all(req.params.config || {}).then(resource => {
         res.render({ json: resource })
       });
     },
@@ -67,38 +80,39 @@ function persistantActions(resourceName, { from }) {
   }
 }
 
-module.exports.resource = (name, options) => {
+module.exports.resource = (name, options = {}) => {
   const resource = (core) => {
+    // TODO: This is disgusting
     return {
-      routes: options.routes(core) || defaultRoutes(name, core),
-      actions: options.actions(core) || genericActions(name, core)
+      routes: (options.routes && options.routes(core)) || defaultRoutes(name, core),
+      actions: (options.actions && options.actions(core)) || genericActions(name, core)
     }
   }
   resource.resourceName = name
   return resource
 }
 
-module.exports.singular = (resource) {
+module.exports.singular = (resource) => {
   return (core) => {
-    return Object.assign({
-      routes: createSingularRoutes(resource.resourceName)
-    }, resource(core))
+    return Object.assign({}, resource(core), {
+      routes: singularRoutes(resource.resourceName)
+    })
   }
 }
 
 module.exports.persistant = (resource, model) => {
   return (core) => {
-    return Object.assign({
-      actions: createPersistantActions(resource.resourceName, core)
+    return Object.assign({}, resource(core), {
+      actions: persistantActions(resource.resourceName, core),
       model
-    }, resource(core))
+    })
   }
 }
-
-module.exports.restricted = (resource, authorizers) => {
-  return (core) => {
-    return Object.assign({
-      actions: createPersistantActions(resource.resourceName, core)
-    }, resource(core))
-  }
-}
+//
+// module.exports.restricted = (resource, authorizers) => {
+//   return (core) => {
+//     return Object.assign({
+//       actions: createPersistantActions(resource.resourceName, core)
+//     }, resource(core))
+//   }
+// }
