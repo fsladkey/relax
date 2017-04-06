@@ -11,7 +11,7 @@
 // from("posts").delete();
 // from("posts").delete({ title: "delatable" });
 
-function createFromAPI(resourceConfig) {
+module.exports = function createFromAPI(resourceConfig) {
   return function from(resourceType) => {
     const resourceInfo = resourceConfig[resourceType]
 

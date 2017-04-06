@@ -37,7 +37,7 @@ const config = {
   },
   plugins: [
     new ExtractTextPlugin('[name].css'),
-    new WebpackOnBuildPlugin(function(stats) {
+    new WebpackOnBuildPlugin(function (stats) {
         emitRefresh();
       }),
   ],
@@ -47,7 +47,7 @@ const config = {
     })
   ],
   resolve: {
-    extensions: ['', '.js', '.sass'],
+    extensions: ['', '.js', '.sass', '*'],
     root: [path.join(__dirname, './src')]
   }
 }

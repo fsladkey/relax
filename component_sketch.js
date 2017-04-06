@@ -21,7 +21,7 @@ class App Extends Component {
   }
 
   render() {
-    const { currentUser } = this.props;
+    const { currentUser } = this.props
     return (
       <main>
         <h1>Welcome { currentUser.username }</h1>
@@ -32,9 +32,11 @@ class App Extends Component {
 
 }
 
+export default connect(App)
+
 class PostsIndex extends Component {
 
-  static resources(from, props) {
+  static resources(from, ownProps) {
     return { posts: from("posts").get.all() }
   }
 
@@ -43,24 +45,26 @@ class PostsIndex extends Component {
   }
 
   render() {
-    const { currentUser } = this.props;
-    const greeting = !!currentUser.id ?
+    const { currentUser } = this.props
+    const loggedIn = !!currentUser.id
+    const greeting = loggedIn ?
       "Please sign in." :
       `Welcome, ${currentUser.username}!`
     return (
       <main>
-        <h1>Welcome { this.props.currentUser.username }</h1>
+        <h1>App Name</h1>
+        <h4>{ greeting }</h4>
         <ul>
           {
-            this.props.posts.map(post => (
+            this.props.posts.map(post =>
               <li>{ post.title }</li>
-            ));
+            )
           }
         </ul>
       </main>
-    );
+    )
   }
 
 }
 
-export default connect(App)
+export default connect(PostsIndex)

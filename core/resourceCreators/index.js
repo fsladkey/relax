@@ -1,3 +1,4 @@
+const snakeCase = require('snake-case')
 const ACTION_TYPES = ["index", "show", "create", "update", "destroy"]
 
 const genericHandler = (type) => (req, res) => {
@@ -5,18 +6,17 @@ const genericHandler = (type) => (req, res) => {
 }
 
 const matcher = (resourceName) => {
-  return new RegExp(`^\/${resourceName}\/?$`)
+  return new RegExp(`^\/${snakeCase(resourceName)}\/?$`)
 }
 
 const matchOne =(resourceName) => {
-  return new RegExp(`^\/${resourceName}\/(.+)\/?$`)
+  return new RegExp(`^\/${snakeCase(resourceName)}\/(.+)\/?$`)
 }
 
 function defaultRoutes(resourceName, core) {
   const createHandler = (name) => (...args) => (
     core[resourceName].actions[name](...args)
   )
-  new RegExp(`^\/${resourceName}\/(.+)\/?`)
   return [
     { method: 'GET', path:  matcher(resourceName), handler: createHandler("index") },
     { method: 'GET', path: matchOne(resourceName), handler: createHandler("show") },
@@ -47,35 +47,35 @@ function genericActions(resourceName, core) {
 function persistantActions(resourceName, { from }) {
   return {
     index(req, res) {
-      from(resourceName).get.all(req.params.config || {}).then(resource => {
+      from(resourceName).get.all(req.params.config || {}).then(resource =>
         res.render({ json: resource })
-      });
+      )
     },
 
     show(req, res) {
-      from(resourceName).get(req.params.id).then(resource => {
+      from(resourceName).get(req.params.id).then(resource =>
         res.render({ json: resource })
-      });
+      )
     },
 
     create(req, res) {
-      from(resourceName).post(req.params[resourceName]).then(resource => {
+      from(resourceName).post(req.params[resourceName]).then(resource =>
         res.render({ json: resource })
-      });
+      )
     },
 
     update(req, res) {
       const { id } = req.params
-      from(resourceName).patch(id, req.params[resourceName]).then(resource => {
+      from(resourceName).patch(id, req.params[resourceName]).then(resource =>
         res.render({ json: resource })
-      });
+      )
     },
 
     destroy(req, res) {
       const { id } = req.params
-      from(resourceName).delete(id).then(resource => {
+      from(resourceName).delete(id).then(resource =>
         res.render({ json: resource })
-      });
+      )
     }
   }
 }

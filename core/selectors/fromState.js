@@ -13,7 +13,7 @@
 
 const buildFromConfig = require('./buildFromConfig')
 
-function createFromState(resourceConfig, getState) {
+module.exports = function createFromState(resourceConfig, getState) {
   return function from(resourceType) => {
     const items = getState()[resourceType]
     const resourceInfo = resource[resourceType]

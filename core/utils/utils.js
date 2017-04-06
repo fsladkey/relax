@@ -1,7 +1,7 @@
 const Immutable = require('immutable')
 
 function isEmpty(obj) {
-    for (var key in obj) if (hasOwnProperty.call(obj, key)) return false;
+    for (let key in obj) if (hasOwnProperty.call(obj, key)) return false;
     return true;
 }
 
@@ -21,12 +21,6 @@ function filterMap(arr, cb) {
     if (typeof result !== 'undefined') newArr.push(result)
   }
   return newArr
-}
-
-function mapFromArray(items) {
-  const obj = {}
-  items.forEach(item => obj[item.id] = item)
-  return Immutable.Map(obj)
 }
 
 function only(...args) {

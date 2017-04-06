@@ -8,7 +8,6 @@ const HTTPRequest = require('./utils/request')
 const HTTPResponse = require('./utils/response')
 
 
-
 const errorHandler = (req, res) => {
   res.render({
     html: `No route matches ${req.url} with method ${req.method}`
